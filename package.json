@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "build:dev:mac": "vue-cli-service electron:build --mode dev --mac",
-    "electron:serve": "vue-cli-service electron:serve",
+    "build:dev:win": "vue-cli-service electron:build --mode dev --win",
+    "app": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "package-win":"electron-packager ./ --platform=win32 --out ./  --overwrite  --ignore=node_modules --arch=x64"
   },
   "main": "background.js",
   "dependencies": {
+    "@element-plus/icons-vue": "^1.1.4",
     "core-js": "^3.8.3",
     "element-plus": "^2.1.5",
     "vue": "^3.2.13",
@@ -31,6 +34,8 @@
     "@vue/eslint-config-standard": "^6.1.0",
     "electron": "^17.2.0",
     "electron-devtools-installer": "^3.1.0",
+    "electron-packager": "^15.4.0",
+    "electron-rebuild": "^3.2.7",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",

@@ -1,29 +1,37 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+
+// import { exportQuestionnaire } from './export'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
+  {
+    scheme: 'app',
+    privileges: {
+      secure: true,
+      standard: true
+    }
+  }
 ])
 
-async function createWindow() {
+async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 960,
+    height: 760,
     webPreferences: {
-      
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-
+  win.setResizable(false)
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -79,3 +87,20 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('exportQuestionnaire', (event, arg) => {
+  let msg = JSON.parse(arg[1]).map((v, i) => {
+    return `Q${i + 1} ${v.value}`
+  })
+  let type = 'info'
+  if (!msg.length) {
+    msg = 'Question is null!'
+    type = 'warning'
+  }
+  dialog.showMessageBoxSync({
+    title: arg[0],
+    message: msg.toString(),
+    buttons: [],
+    type
+  })
+})
